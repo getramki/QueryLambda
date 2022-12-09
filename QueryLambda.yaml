@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  QueryLambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs16.x
+      CodeUri: './Lambda'
+      Description: ''
+      MemorySize: 128
+      Timeout: 3
+      Role: 'arn:aws:iam::Replace-With-AWS-Account-ID:role/QueryLambdaExeRole'
+      VpcConfig:
+        SecurityGroupIds:
+          - <CHANGE-SG-Which-Give-Access-to-DB>
+        SubnetIds:
+          - <subnet1-ChangeToDBSubnet>
+          - <subnet2-ChangeToDBSubnet>
+          - <subnet3-ChangeToDBSubnet>
+          - <subnet4-ChangeToDBSubnet>
+      Layers:
+        - !Ref  MySQLlayer
+  MySQLlayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: MySQL
+      Description: MySQL NPM package.
+      ContentUri: './Layers'
+      CompatibleRuntimes:
+        - nodejs16.x
+        - nodejs14.x
+        - nodejs12.x
+      LicenseInfo: 'Available under the Apache-2.0 license.'
+      RetentionPolicy: Retain
